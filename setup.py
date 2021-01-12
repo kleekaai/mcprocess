@@ -12,6 +12,12 @@ with open("HISTORY.rst") as history_file:
 
 requirements = [
     "Click>=7.0",
+    "spacy==2.3.5",
+    "numpy==1.19.4",
+    "pandas==1.1.5",
+    "seaborn==0.11.1",
+    "plotly==4.14.1",
+    "matplotlib==3.3.3",
 ]
 
 setup_requirements = [
