@@ -30,7 +30,7 @@ Text Processing Library
 Features
 --------
 
-* TODO
+* Text Processing
 
 Credits
 -------
