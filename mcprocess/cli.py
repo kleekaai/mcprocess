@@ -4,7 +4,7 @@ import click
 import ntpath
 import pandas as pd
 from pathlib import Path
-from utils import transform_data
+from .utils import transform_data
 
 
 @click.command()
@@ -21,8 +21,6 @@ def main(file):
         df = transform_data(df)
         df.to_csv(base_dir / processed_file_name, sep=",", index=False)
         click.echo("Generated processed file.")
-        # click.echo('{0}, {1}.'.format(greet, name))
-
 
 if __name__ == "__main__":
 	base_dir = Path.cwd()
