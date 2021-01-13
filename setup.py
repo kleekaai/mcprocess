@@ -3,6 +3,10 @@
 """The setup script."""
 
 from setuptools import setup, find_packages
+from setuptools.command.install import install
+from setuptools.command.develop import develop
+from setuptools.command.egg_info import egg_info
+from subprocess import getoutput
 
 with open("README.rst") as readme_file:
     readme = readme_file.read()
@@ -12,12 +16,8 @@ with open("HISTORY.rst") as history_file:
 
 requirements = [
     "Click>=7.0",
-    "spacy==2.3.5",
-    "numpy==1.19.4",
+    "spacy==2.3.5",    
     "pandas==1.1.5",
-    "seaborn==0.11.1",
-    "plotly==4.14.1",
-    "matplotlib==3.3.3",
 ]
 
 setup_requirements = [
@@ -27,6 +27,33 @@ setup_requirements = [
 test_requirements = [
     "pytest>=3",
 ]
+
+class PostInstall(install):
+    spacy_model = 'python -m spacy download en'
+    def run(self):
+        install.run(self)
+        print(getoutput(self.spacy_model))
+        #https://pip.pypa.io/en/stable/user_guide/#using-pip-from-your-program
+        #subprocess.call([sys.executable, '-m', 'pip', 'install', self.pkgs])
+
+
+class CustomInstallCommand(install):
+    def run(self):
+        install.run(self)
+        PostInstall()
+
+
+class CustomDevelopCommand(develop):
+    def run(self):
+        develop.run(self)
+        PostInstall()
+
+
+class CustomEggInfoCommand(egg_info):
+    def run(self):
+        egg_info.run(self)
+        PostInstall()
+
 
 setup(
     author="Mohit Jain",
@@ -50,10 +77,12 @@ setup(
         ],
     },
     install_requires=requirements,
-    extras_requires=[
-        'spacy',
-        'en_core_web_sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-2.0.0/en_core_web_sm-2.0.0.tar.gz',
-    ],
+    extras_require={'interactive': ['matplotlib>=3.3.0']},
+    cmdclass={
+        'install': CustomInstallCommand,
+        'develop': CustomDevelopCommand,
+        'egg_info': CustomEggInfoCommand,
+    },
     license="MIT license",
     long_description=readme + "\n\n" + history,
     include_package_data=True,
@@ -64,6 +93,6 @@ setup(
     test_suite="tests",
     tests_require=test_requirements,
     url="https://github.com/kleekaai/mcprocess",
-    version="0.1.0",
+    version="0.1.31",
     zip_safe=False,
 )
